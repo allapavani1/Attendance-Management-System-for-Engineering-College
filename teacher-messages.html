@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - SRKR Engineering College</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --accent-color: #34a853;
+            --light-color: #f8f9fa;
+            --dark-color: #202124;
+            --gray-color: #5f6368;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: var(--dark-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Messages Content */
+        .messages-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: calc(100vh - 140px);
+        }
+
+        /* Conversations List */
+        .conversations-list {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .conversations-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .new-message-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .conversation-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .conversation-item:hover {
+            background-color: var(--light-color);
+        }
+
+        .conversation-item.active {
+            background-color: var(--light-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .conversation-name {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .conversation-time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .conversation-preview {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .chat-info h3 {
+            color: var(--dark-color);
+            margin-bottom: 2px;
+        }
+
+        .chat-info p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.sent {
+            align-items: flex-end;
+        }
+
+        .message.received {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 5px;
+        }
+
+        .message.sent .message-content {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received .message-content {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            resize: none;
+            height: 40px;
+        }
+
+        .send-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo h1, .nav-link span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .nav-link {
+                justify-content: center;
+            }
+
+            .nav-link i {
+                margin: 0;
+            }
+
+            .messages-container {
+                grid-template-columns: 1fr;
+            }
+
+            .conversations-list {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="logo.jfif" alt="SRKR Engineering College Logo">
+            <h1>SRKR</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="teacher-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-attendance.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-marks.html" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Marks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-reports.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-students.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-messages.html" class="nav-link active">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h2>Messages</h2>
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40" alt="Teacher Profile">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="messages-container">
+            <!-- Conversations List -->
+            <div class="conversations-list">
+                <div class="conversations-header">
+                    <h3>Conversations</h3>
+                    <button class="new-message-btn" onclick="newMessage()">
+                        <i class="fas fa-plus"></i> New Message
+                    </button>
+                </div>
+                <div class="conversation-item active" onclick="selectConversation('21CS001')">
+                    <div class="conversation-header">
+                        <span class="conversation-name">John Doe</span>
+                        <span class="conversation-time">2:30 PM</span>
+                    </div>
+                    <div class="conversation-preview">
+                        Thank you for your help with the assignment.
+                    </div>
+                </div>
+                <div class="conversation-item" onclick="selectConversation('21CS002')">
+                    <div class="conversation-header">
+                        <span class="conversation-name">Jane Smith</span>
+                        <span class="conversation-time">1:45 PM</span>
+                    </div>
+                    <div class="conversation-preview">
+                        When is the next class scheduled?
+                    </div>
+                    <span class="unread-badge">2</span>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div class="chat-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="chat-info">
+                        <h3>John Doe</h3>
+                        <p>21CS001 - CSE</p>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    <div class="message received">
+                        <div class="message-content">
+                            Hello sir, I have a question about the last lecture.
+                        </div>
+                        <span class="message-time">2:25 PM</span>
+                    </div>
+                    <div class="message sent">
+                        <div class="message-content">
+                            Sure, what would you like to know?
+                        </div>
+                        <span class="message-time">2:26 PM</span>
+                    </div>
+                    <div class="message received">
+                        <div class="message-content">
+                            Can you explain the concept of linked lists again?
+                        </div>
+                        <span class="message-time">2:27 PM</span>
+                    </div>
+                    <div class="message sent">
+                        <div class="message-content">
+                            Of course! A linked list is a linear data structure where elements are stored in nodes, and each node points to the next node in the sequence.
+                        </div>
+                        <span class="message-time">2:28 PM</span>
+                    </div>
+                    <div class="message received">
+                        <div class="message-content">
+                            Thank you for your help with the assignment.
+                        </div>
+                        <span class="message-time">2:30 PM</span>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <textarea class="message-input" placeholder="Type your message..."></textarea>
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('teacherLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'teacher-login.html';
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            sessionStorage.removeItem('teacherLoggedIn');
+            window.location.href = 'teacher-login.html';
+        }
+
+        // Select conversation
+        function selectConversation(studentId) {
+            // Remove active class from all conversations
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            // Add active class to selected conversation
+            event.currentTarget.classList.add('active');
+            // Add your conversation loading logic here
+            alert(`Loading conversation with student ${studentId}`);
+        }
+
+        // New message
+        function newMessage() {
+            // Add your new message logic here
+            alert('Opening new message dialog');
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.querySelector('.message-input');
+            if (input.value.trim()) {
+                // Add your message sending logic here
+                alert('Message sent successfully!');
+                input.value = '';
+            }
+        }
+
+        // Check authentication on page load
+        checkAuth();
+    </script>
+</body>
+</html> 

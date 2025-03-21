@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks - Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --accent-color: #34a853;
+            --light-color: #f8f9fa;
+            --dark-color: #202124;
+            --gray-color: #5f6368;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: var(--dark-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Marks Content */
+        .marks-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .marks-main {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .marks-sidebar {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .marks-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gray-color);
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .marks-table th,
+        .marks-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .marks-table th {
+            background-color: var(--light-color);
+            color: var(--gray-color);
+        }
+
+        .marks-table tr:hover {
+            background-color: var(--light-color);
+        }
+
+        .grade-a {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .grade-b {
+            color: #4285f4;
+            font-weight: 500;
+        }
+
+        .grade-c {
+            color: #fbbc05;
+            font-weight: 500;
+        }
+
+        .grade-f {
+            color: #ea4335;
+            font-weight: 500;
+        }
+
+        .performance-summary {
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--gray-color);
+        }
+
+        .summary-value {
+            font-weight: 500;
+        }
+
+        .grade-distribution {
+            margin-top: 20px;
+        }
+
+        .grade-bar {
+            height: 20px;
+            background-color: var(--light-color);
+            border-radius: 10px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .grade-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .grade-a-fill {
+            background-color: var(--accent-color);
+        }
+
+        .grade-b-fill {
+            background-color: #4285f4;
+        }
+
+        .grade-c-fill {
+            background-color: #fbbc05;
+        }
+
+        .grade-f-fill {
+            background-color: #ea4335;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo h1, .nav-link span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .nav-link {
+                justify-content: center;
+            }
+
+            .nav-link i {
+                margin: 0;
+            }
+
+            .marks-container {
+                grid-template-columns: 1fr;
+            }
+
+            .marks-filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="logo.jfif" alt="SRKR Engineering College Logo">
+            <h1>Student Portal</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="student-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-attendance.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-marks.html" class="nav-link active">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Marks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-messages.html" class="nav-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-profile.html" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="student-help.html" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help & Support</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h2>Academic Performance</h2>
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40" alt="Student Profile">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="marks-container">
+            <div class="marks-main">
+                <div class="marks-filters">
+                    <div class="filter-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject">
+                            <option value="">All Subjects</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="semester">Semester</label>
+                        <select id="semester">
+                            <option value="">All Semesters</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>Final Exam</td>
+                            <td>2024-03-15</td>
+                            <td>92/100</td>
+                            <td class="grade-a">A</td>
+                        </tr>
+                        <tr>
+                            <td>Physics</td>
+                            <td>Mid-term</td>
+                            <td>2024-03-10</td>
+                            <td>85/100</td>
+                            <td class="grade-b">B</td>
+                        </tr>
+                        <tr>
+                            <td>Chemistry</td>
+                            <td>Assignment</td>
+                            <td>2024-03-05</td>
+                            <td>78/100</td>
+                            <td class="grade-c">C</td>
+                        </tr>
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>Quiz</td>
+                            <td>2024-02-28</td>
+                            <td>95/100</td>
+                            <td class="grade-a">A</td>
+                        </tr>
+                        <tr>
+                            <td>Physics</td>
+                            <td>Lab Report</td>
+                            <td>2024-02-25</td>
+                            <td>88/100</td>
+                            <td class="grade-b">B</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="marks-sidebar">
+                <h3>Performance Summary</h3>
+                <div class="performance-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Average Score</span>
+                        <span class="summary-value">87.6%</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Highest Score</span>
+                        <span class="summary-value">95%</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Lowest Score</span>
+                        <span class="summary-value">78%</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Assessments</span>
+                        <span class="summary-value">5</span>
+                    </div>
+                </div>
+
+                <div class="grade-distribution">
+                    <h3>Grade Distribution</h3>
+                    <div class="grade-bar">
+                        <div class="grade-fill grade-a-fill" style="width: 40%"></div>
+                    </div>
+                    <div class="grade-bar">
+                        <div class="grade-fill grade-b-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="grade-bar">
+                        <div class="grade-fill grade-c-fill" style="width: 20%"></div>
+                    </div>
+                    <div class="grade-bar">
+                        <div class="grade-fill grade-f-fill" style="width: 10%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('studentLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'student-login.html';
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            sessionStorage.removeItem('studentLoggedIn');
+            window.location.href = 'student-login.html';
+        }
+
+        // Check authentication on page load
+        checkAuth();
+    </script>
+</body>
+</html> 

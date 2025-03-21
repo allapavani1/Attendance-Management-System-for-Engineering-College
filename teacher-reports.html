@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - SRKR Engineering College</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --accent-color: #34a853;
+            --light-color: #f8f9fa;
+            --dark-color: #202124;
+            --gray-color: #5f6368;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: var(--dark-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Reports Content */
+        .reports-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card h3 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-card i {
+            color: var(--primary-color);
+        }
+
+        .report-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            margin-bottom: 5px;
+            color: var(--gray-color);
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .generate-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .download-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .preview-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .report-preview {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .report-preview.active {
+            display: block;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preview-table th,
+        .preview-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .preview-table th {
+            background-color: white;
+            font-weight: 500;
+        }
+
+        /* Recent Reports Section */
+        .recent-reports {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .recent-reports h3 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .reports-list {
+            list-style: none;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+
+        .report-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-info i {
+            color: var(--primary-color);
+        }
+
+        .report-actions-small {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .logo h1, .nav-link span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .nav-link {
+                justify-content: center;
+            }
+
+            .nav-link i {
+                margin: 0;
+            }
+
+            .report-actions {
+                flex-wrap: wrap;
+            }
+
+            .action-btn {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="logo.jfif" alt="SRKR Engineering College Logo">
+            <h1>SRKR</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="teacher-dashboard.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-attendance.html" class="nav-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-marks.html" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Marks</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-reports.html" class="nav-link active">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-students.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-messages.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teacher-settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h2>Reports</h2>
+            <div class="user-info">
+                <img src="https://via.placeholder.com/40" alt="Teacher Profile">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="reports-container">
+            <!-- Performance Report Card -->
+            <div class="report-card">
+                <h3><i class="fas fa-chart-line"></i> Performance Report</h3>
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label for="performance-class">Class</label>
+                        <select id="performance-class">
+                            <option value="3rd-year-cse">3rd Year CSE</option>
+                            <option value="3rd-year-it">3rd Year IT</option>
+                            <option value="3rd-year-ece">3rd Year ECE</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="performance-subject">Subject</label>
+                        <select id="performance-subject">
+                            <option value="data-structures">Data Structures</option>
+                            <option value="computer-networks">Computer Networks</option>
+                            <option value="dbms">DBMS</option>
+                            <option value="os">Operating Systems</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="performance-period">Period</label>
+                        <select id="performance-period">
+                            <option value="semester">Semester</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="action-btn generate-btn" onclick="generateReport('performance')">
+                        <i class="fas fa-file-alt"></i> Generate
+                    </button>
+                    <button class="action-btn preview-btn" onclick="previewReport('performance')">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button class="action-btn download-btn" onclick="downloadReport('performance')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+                <div class="report-preview" id="performance-preview">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Mid 1</th>
+                                <th>Mid 2</th>
+                                <th>Final</th>
+                                <th>Average</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>85</td>
+                                <td>90</td>
+                                <td>88</td>
+                                <td>87.7</td>
+                                <td>A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attendance Report Card -->
+            <div class="report-card">
+                <h3><i class="fas fa-calendar-check"></i> Attendance Report</h3>
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label for="attendance-class">Class</label>
+                        <select id="attendance-class">
+                            <option value="3rd-year-cse">3rd Year CSE</option>
+                            <option value="3rd-year-it">3rd Year IT</option>
+                            <option value="3rd-year-ece">3rd Year ECE</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="attendance-subject">Subject</label>
+                        <select id="attendance-subject">
+                            <option value="data-structures">Data Structures</option>
+                            <option value="computer-networks">Computer Networks</option>
+                            <option value="dbms">DBMS</option>
+                            <option value="os">Operating Systems</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="attendance-date">Date Range</label>
+                        <input type="date" id="attendance-date">
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="action-btn generate-btn" onclick="generateReport('attendance')">
+                        <i class="fas fa-file-alt"></i> Generate
+                    </button>
+                    <button class="action-btn preview-btn" onclick="previewReport('attendance')">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button class="action-btn download-btn" onclick="downloadReport('attendance')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+                <div class="report-preview" id="attendance-preview">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Total</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>45</td>
+                                <td>3</td>
+                                <td>48</td>
+                                <td>93.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Progress Report Card -->
+            <div class="report-card">
+                <h3><i class="fas fa-chart-bar"></i> Progress Report</h3>
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label for="progress-class">Class</label>
+                        <select id="progress-class">
+                            <option value="3rd-year-cse">3rd Year CSE</option>
+                            <option value="3rd-year-it">3rd Year IT</option>
+                            <option value="3rd-year-ece">3rd Year ECE</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="progress-subject">Subject</label>
+                        <select id="progress-subject">
+                            <option value="data-structures">Data Structures</option>
+                            <option value="computer-networks">Computer Networks</option>
+                            <option value="dbms">DBMS</option>
+                            <option value="os">Operating Systems</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="progress-period">Period</label>
+                        <select id="progress-period">
+                            <option value="semester">Semester</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="action-btn generate-btn" onclick="generateReport('progress')">
+                        <i class="fas fa-file-alt"></i> Generate
+                    </button>
+                    <button class="action-btn preview-btn" onclick="previewReport('progress')">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button class="action-btn download-btn" onclick="downloadReport('progress')">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+                <div class="report-preview" id="progress-preview">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Initial</th>
+                                <th>Current</th>
+                                <th>Improvement</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>75%</td>
+                                <td>87.7%</td>
+                                <td>+12.7%</td>
+                                <td>Improving</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Reports Section -->
+        <div class="recent-reports">
+            <h3>Recent Reports</h3>
+            <ul class="reports-list">
+                <li class="report-item">
+                    <div class="report-info">
+                        <i class="fas fa-file-alt"></i>
+                        <div>
+                            <div>Performance Report - Data Structures</div>
+                            <small>Generated on March 20, 2024</small>
+                        </div>
+                    </div>
+                    <div class="report-actions-small">
+                        <button class="action-btn preview-btn" onclick="previewReport('recent-performance')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn download-btn" onclick="downloadReport('recent-performance')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </li>
+                <li class="report-item">
+                    <div class="report-info">
+                        <i class="fas fa-calendar-check"></i>
+                        <div>
+                            <div>Attendance Report - Computer Networks</div>
+                            <small>Generated on March 19, 2024</small>
+                        </div>
+                    </div>
+                    <div class="report-actions-small">
+                        <button class="action-btn preview-btn" onclick="previewReport('recent-attendance')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn download-btn" onclick="downloadReport('recent-attendance')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('teacherLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'teacher-login.html';
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            sessionStorage.removeItem('teacherLoggedIn');
+            window.location.href = 'teacher-login.html';
+        }
+
+        // Generate report
+        function generateReport(type) {
+            // Add your report generation logic here
+            alert(`${type} report generated successfully!`);
+        }
+
+        // Preview report
+        function previewReport(type) {
+            const preview = document.getElementById(`${type}-preview`);
+            if (preview) {
+                preview.classList.toggle('active');
+            }
+        }
+
+        // Download report
+        function downloadReport(type) {
+            // Add your download logic here
+            alert(`${type} report downloaded successfully!`);
+        }
+
+        // Check authentication on page load
+        checkAuth();
+    </script>
+</body>
+</html> 
